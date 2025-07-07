@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:gemini_app/config/router/app_router.dart';
 import 'package:gemini_app/config/theme/app_theme.dart';
 

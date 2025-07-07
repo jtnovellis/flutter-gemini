@@ -17,7 +17,7 @@ class AppTheme {
         systemNavigationBarIconBrightness: themeBrightness,
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,
-      )
+      ),
     );
   }
 
@@ -26,9 +26,7 @@ class AppTheme {
       brightness: isDark ? Brightness.dark : Brightness.light,
       useMaterial3: true,
       colorSchemeSeed: seedColor,
-      listTileTheme: const ListTileThemeData(
-        iconColor: seedColor,
-      ),
+      listTileTheme: const ListTileThemeData(iconColor: seedColor),
       appBarTheme: const AppBarTheme(
         backgroundColor: Color(0xFF1E1C36),
         surfaceTintColor: Colors.transparent,

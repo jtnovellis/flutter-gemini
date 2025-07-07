@@ -19,9 +19,9 @@ class HomeScreen extends StatelessWidget {
               child: Icon(Icons.person_2_outlined),
             ),
             onTap: () => context.push('/basic-prompt'),
-          )
+          ),
         ],
-      )
+      ),
     );
   }
 }
