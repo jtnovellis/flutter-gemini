@@ -1,8 +1,9 @@
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:uuid/uuid.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import 'package:gemini_app/presentation/providers/chat/is_gemini_writing.dart';
 import 'package:gemini_app/presentation/providers/users/user_provider.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:uuid/uuid.dart';
 
 part 'basic_chat.g.dart';
 
