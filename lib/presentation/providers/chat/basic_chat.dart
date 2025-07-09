@@ -1,4 +1,5 @@
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:gemini_app/config/gemini/gemini_impl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -9,6 +10,8 @@ part 'basic_chat.g.dart';
 
 @riverpod
 class BasicChat extends _$BasicChat {
+  final GeminiImpl geminiImpl = GeminiImpl();
+
   @override
   List<types.Message> build() {
     return [];
@@ -37,13 +40,13 @@ class BasicChat extends _$BasicChat {
     final geminiUser = ref.read(geminiUserProvider);
     final isWriting = ref.read(isGeminiWritingProvider.notifier);
     isWriting.setIsWriting();
-    await Future.delayed(const Duration(seconds: 2));
+    final response = await geminiImpl.getResponse(prompt);
     isWriting.setIsNotWriting();
 
     final message = types.TextMessage(
       author: geminiUser,
       id: Uuid().v4(),
-      text: 'Hello world from gemini $prompt',
+      text: response,
       createdAt: DateTime.now().millisecondsSinceEpoch,
     );
 
