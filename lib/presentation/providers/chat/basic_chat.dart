@@ -24,18 +24,36 @@ class BasicChat extends _$BasicChat {
     required types.User user,
   }) {
     _addTextMessage(partialText, user);
-    _geminiTextResponse(partialText.text);
+    _geminiStreamResponse(partialText.text);
   }
 
   void _addTextMessage(types.PartialText partialText, types.User user) {
     _createTextMessage(partialText, user);
   }
 
-  Future<void> _geminiTextResponse(String prompt) async {
+  // Future<void> _geminiTextResponse(String prompt) async {
+  //   _setGeminiWritingStatus(true);
+  //   final response = await geminiImpl.getResponse(prompt);
+  //   _setGeminiWritingStatus(false);
+  //   _createTextMessage(types.PartialText(text: response), geminiUser);
+  // }
+
+  Future<void> _geminiStreamResponse(String prompt) async {
     _setGeminiWritingStatus(true);
-    final response = await geminiImpl.getResponse(prompt);
+    _createTextMessage(
+      types.PartialText(text: 'Gemini is thinking...'),
+      geminiUser,
+    );
+
+    geminiImpl.getStreamResponse(prompt).listen((data) {
+      if (data.isEmpty) return;
+      final updatedMessages = [...state];
+      final firstMessage = (updatedMessages.first as types.TextMessage)
+          .copyWith(text: data);
+      updatedMessages[0] = firstMessage;
+      state = updatedMessages;
+    });
     _setGeminiWritingStatus(false);
-    _createTextMessage(types.PartialText(text: response), geminiUser);
   }
 
   void _setGeminiWritingStatus(bool isWriting) {

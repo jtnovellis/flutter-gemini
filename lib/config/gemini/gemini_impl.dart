@@ -15,8 +15,23 @@ class GeminiImpl {
       );
       return response.data;
     } catch (e) {
-      print(e);
       throw Exception('Error getting response from Gemini');
+    }
+  }
+
+  Stream<String> getStreamResponse(String prompt) async* {
+    final body = jsonEncode({'prompt': prompt});
+    final response = await _http.post(
+      '/basic-prompt-stream',
+      data: body,
+      options: Options(responseType: ResponseType.stream),
+    );
+    final stream = response.data.stream as Stream<List<int>>;
+
+    String buffer = '';
+    await for (final chunk in stream) {
+      buffer += utf8.decode(chunk, allowMalformed: true);
+      yield buffer;
     }
   }
 }
