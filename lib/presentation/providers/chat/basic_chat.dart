@@ -11,9 +11,11 @@ part 'basic_chat.g.dart';
 @riverpod
 class BasicChat extends _$BasicChat {
   final GeminiImpl geminiImpl = GeminiImpl();
+  late final types.User geminiUser;
 
   @override
   List<types.Message> build() {
+    geminiUser = ref.read(geminiUserProvider);
     return [];
   }
 
@@ -26,27 +28,28 @@ class BasicChat extends _$BasicChat {
   }
 
   void _addTextMessage(types.PartialText partialText, types.User user) {
+    _createTextMessage(partialText, user);
+  }
+
+  Future<void> _geminiTextResponse(String prompt) async {
+    _setGeminiWritingStatus(true);
+    final response = await geminiImpl.getResponse(prompt);
+    _setGeminiWritingStatus(false);
+    _createTextMessage(types.PartialText(text: response), geminiUser);
+  }
+
+  void _setGeminiWritingStatus(bool isWriting) {
+    final isGeminiWriting = ref.read(isGeminiWritingProvider.notifier);
+    isWriting
+        ? isGeminiWriting.setIsWriting()
+        : isGeminiWriting.setIsNotWriting();
+  }
+
+  void _createTextMessage(types.PartialText partialText, types.User user) {
     final message = types.TextMessage(
       author: user,
       id: Uuid().v4(),
       text: partialText.text,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-    );
-
-    state = [message, ...state];
-  }
-
-  Future<void> _geminiTextResponse(String prompt) async {
-    final geminiUser = ref.read(geminiUserProvider);
-    final isWriting = ref.read(isGeminiWritingProvider.notifier);
-    isWriting.setIsWriting();
-    final response = await geminiImpl.getResponse(prompt);
-    isWriting.setIsNotWriting();
-
-    final message = types.TextMessage(
-      author: geminiUser,
-      id: Uuid().v4(),
-      text: response,
       createdAt: DateTime.now().millisecondsSinceEpoch,
     );
 
